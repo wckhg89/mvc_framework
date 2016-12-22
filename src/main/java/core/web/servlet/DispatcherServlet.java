@@ -16,10 +16,6 @@ import core.web.request.RequestMapping;
 import next.controller.Controller;
 
 /**
- * Created by kanghonggu on 2016-12-22.
- */
-
-/**
  * http://forarchitect.tistory.com/34
  * 서블릿은 최초 요청이 들어올때 초기화된다.
  *
