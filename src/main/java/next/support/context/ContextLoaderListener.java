@@ -12,6 +12,10 @@ import javax.servlet.annotation.WebListener;
 
 import core.jdbc.ConnectionManager;
 
+
+/**
+ * http://yi-chi.tistory.com/20
+ */
 @WebListener
 public class ContextLoaderListener implements ServletContextListener {
     private static final Logger logger = LoggerFactory.getLogger(ContextLoaderListener.class);

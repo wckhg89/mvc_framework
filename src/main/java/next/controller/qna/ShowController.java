@@ -12,6 +12,9 @@ import next.model.Question;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 
+/**
+ * https://beyondj2ee.wordpress.com/2013/02/28/%EB%A9%80%ED%8B%B0-%EC%93%B0%EB%A0%88%EB%93%9C-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-%EC%8A%A4%ED%94%84%EB%A7%81%EB%B9%88-%EC%A3%BC%EC%9D%98%EC%82%AC%ED%95%AD/
+ */
 public class ShowController extends AbstractController {
     private QuestionDao questionDao = new QuestionDao();
     private AnswerDao answerDao = new AnswerDao();
