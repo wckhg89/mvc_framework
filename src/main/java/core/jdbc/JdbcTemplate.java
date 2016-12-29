@@ -11,12 +11,21 @@ import java.util.List;
  * Created by kanghonggu on 2016-12-27.
  */
 public class JdbcTemplate {
-    public void saveOrUpdate (String sql, SetParam setParam) throws SQLException {
+    private SetParam createPrepareStatement (Object... args) throws SQLException {
+        return pstmt -> {
+            for (int i = 1 ; i <= args.length ; i++) {
+                pstmt.setObject(i, args[i-1]);
+            }
+        };
+    }
+
+    public void saveOrUpdate (String sql, Object... args) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
+            SetParam setParam = this.createPrepareStatement(args);
             setParam.setParam(pstmt);
 
             pstmt.executeUpdate();
@@ -31,7 +40,7 @@ public class JdbcTemplate {
         }
     }
 
-    private <T> List<T> commonQuery (String sql, SetParam setParam, RowMapper<T> rowMapper) throws SQLException {
+    private <T> List<T> commonQuery (String sql, RowMapper<T> rowMapper, Object... args) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -39,9 +48,8 @@ public class JdbcTemplate {
         try {
             con = ConnectionManager.getConnection();
             pstmt = con.prepareStatement(sql);
-            if (setParam != null) {
-                setParam.setParam(pstmt);
-            }
+            SetParam setParam = this.createPrepareStatement(args);
+            setParam.setParam(pstmt);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
@@ -62,12 +70,12 @@ public class JdbcTemplate {
         return users;
     }
 
-    public <T> T queryForObject (String sql, SetParam setParam, RowMapper<T> rowMapper) throws SQLException {
-        List<T> users = commonQuery(sql, setParam, rowMapper);
+    public <T> T queryForObject (String sql,RowMapper<T> rowMapper,  Object... args) throws SQLException {
+        List<T> users = commonQuery(sql, rowMapper, args);
         return users.size() == 0 ? null : users.get(0);
     }
 
-    public <T> List<T> queryForList (String sql, RowMapper<T> rowMapper) throws SQLException {
-        return commonQuery(sql, null, rowMapper);
+    public <T> List<T> queryForList (String sql, RowMapper<T> rowMapper, Object... args) throws SQLException {
+        return commonQuery(sql, rowMapper, args);
     }
 }

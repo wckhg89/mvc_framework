@@ -12,29 +12,17 @@ public class UserDao {
 
     public void insert(User user) throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        SetParam setParam = pstmt -> {
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
-        };
-        jdbcTemplate.saveOrUpdate("INSERT INTO USERS VALUES (?, ?, ?, ?)", setParam);
+        jdbcTemplate.saveOrUpdate("INSERT INTO USERS VALUES (?, ?, ?, ?)", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
     }
 
     public void update(User user) throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        SetParam setParam = pstmt -> {
-            pstmt.setString(1, user.getPassword());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getEmail());
-            pstmt.setString(4, user.getUserId());
-        };
-        jdbcTemplate.saveOrUpdate("UPDATE USERS SET password = ?, name = ?, email = ? WHERE userId = ?", setParam);
+        jdbcTemplate.saveOrUpdate("UPDATE USERS SET password = ?, name = ?, email = ? WHERE userId = ?", user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
     }
 
     public List<User> findAll() throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        RowMapper rowMapper = rs -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+        RowMapper<User> rowMapper = rs -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
                 rs.getString("email"));
         String sql = "SELECT userId, password, name, email FROM USERS";
 
@@ -43,12 +31,11 @@ public class UserDao {
 
     public User findByUserId(String userId) throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
-        SetParam setParam = pstmt -> pstmt.setString(1, userId);
-        RowMapper rowMapper = rs -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
+        RowMapper<User> rowMapper = rs -> new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
                 rs.getString("email"));
 
         String sql = "SELECT userId, password, name, email FROM USERS WHERE userid = ?";
-        return (User) jdbcTemplate.queryForObject(sql, setParam, rowMapper);
+        return jdbcTemplate.queryForObject(sql, rowMapper, userId);
     }
 
 }
